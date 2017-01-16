@@ -1,0 +1,17 @@
+[package]
+name = "bartenderbot"
+version = "0.1.0"
+authors = ["Dennis Russell <aobajisho@yahoo.com>"]
+
+[dependencies]
+dotenv = "0.8.0"
+rand = "0.3"
+serde = "*"
+serde_json = "*"
+serde_derive = "*"
+nipponium = "*"
+
+[dependencies.serenity]
+git = "https://github.com/zeyla/serenity.git"
+default-features = false
+features = ["cache", "methods", "framework"]

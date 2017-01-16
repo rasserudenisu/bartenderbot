@@ -1,0 +1,32 @@
+{
+  "hiragana": {
+    "command": "!hiragana <text here>",
+    "example": "!hiragana nekoninaritai",
+    "explanation": "Converts romaji to hiragana. Should be well formatted."
+  },
+  "romaji": {
+    "command": "!romaji <text here>",
+    "example": "!romaji ねこになりたい",
+    "explanation": "Converts hiragana to romaji. Should be well formatted."
+  },
+  "roll": {
+    "command": "!roll <optional command>",
+    "example": "!roll 2d10",
+    "explanation": "Rolls up to 3d20. Defaults to 1d6."
+  },
+  "coin": {
+    "command": "!coin",
+    "example": "!coin",
+    "explanation": "Flips a coin."
+  },
+  "sandwich": {
+    "command": "!sandwich",
+    "example": "!sandwich",
+    "explanation": "Buy a sandwich."
+  },
+  "drink": {
+    "command": "!drink",
+    "example": "!drink",
+    "explanation": "Buy a drink."
+  }
+}
