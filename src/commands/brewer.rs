@@ -2,6 +2,8 @@
 
 extern crate serde_json;
 extern crate rand;
+extern crate serenity;
+use serenity::model::{Message};
 
 use std::fs::File;
 use self::rand::thread_rng;
@@ -19,10 +21,13 @@ struct Materials {
 
 fn get_random_item(items: &Vec<String>) -> String {
     let index: usize = thread_rng().gen_range(0, &items.len()-1);
-    return items.get(index).unwrap().clone();
+    if let Some(item) = items.get(index) {
+        return item.clone();
+    }
+    return "mugicha".to_string();
 }
 
-pub fn generate_drink(author: &str) -> String {
+pub fn generate_drink(message: &serenity::model::Message) {
 
     let file = File::open("data/drinks.json").unwrap();
     let materials: Materials = serde_json::from_reader(file).unwrap();
@@ -36,37 +41,34 @@ pub fn generate_drink(author: &str) -> String {
     if drinkType >= 80 {
         buffer.push("a".to_string());
         buffer.push(get_random_item(&materials.beer));
-        return buffer.join(" ");
     }
     //end beer - start neat / on ice
     else if drinkType < 80 && drinkType >= 70 {
         let onIce: u8 = rng.gen_range(0, 100);
         let drink = get_random_item(&materials.spirits);
-        if onIce > 50 {//yes
-            buffer.push(format!("{}, on ice.", drink));
-        } else {//no
-            buffer.push(format!("{}, straight.", drink));
+        match onIce {
+             50 ... 100 => buffer.push(format!("{}, on ice.", drink)),
+            _ => buffer.push(format!("{}, straight.", drink)),
         }
-        return buffer.join(" ");
     }
     //end neat - start shot
     else if drinkType < 70 && drinkType > 60 {
         buffer.push("a shot of".to_string());
         buffer.push(get_random_item(&materials.spirits));
-        return buffer.join(" ");
     }
     // end shot -- start cocktail
     else if drinkType < 60 && drinkType >= 5 {
         let beer_chance: u8 = rng.gen_range(0, 100);
-        if beer_chance > 85 {
-            buffer.push("a".to_string());
-            buffer.push(get_random_item(&materials.beer));
-        }
-        else if beer_chance <= 85 {
-            buffer.push(get_random_item(&materials.spirits));
+        match beer_chance {
+            85 ... 100 => {
+                buffer.push("a".to_string());
+                buffer.push(get_random_item(&materials.beer));
+             },
+            _ => {
+                buffer.push(get_random_item(&materials.spirits));
+            },
         }
 
-        //add commas later
         let addins: u8 = rng.gen_range(0, 3);
         if addins > 0 {
             buffer.push("mixed with".to_string());
@@ -86,12 +88,9 @@ pub fn generate_drink(author: &str) -> String {
         buffer.push("in a".to_string());
         buffer.push(get_random_item(&materials.glasses));
 
-
-        return buffer.join(" ");
-
+    } else {
+        buffer.push("is underage, and got NOTHIN'".to_string());
     }
-    //end cocktail
 
-    //5% chance
-    return "is underage, and got NOTHIN'".to_string();
+    message.reply(buffer.join(" ").as_str());
 }

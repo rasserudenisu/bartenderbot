@@ -2,6 +2,8 @@
 
 extern crate serde_json;
 extern crate rand;
+extern crate serenity;
+use serenity::model::{Message};
 
 use std::fs::File;
 use self::rand::thread_rng;
@@ -23,7 +25,7 @@ struct Item {
     rarity: f64
 }
 
-pub fn generate_sandwich(author: &str) -> String {
+pub fn generate_sandwich(message: &serenity::model::Message) {
 
     let file = File::open("data/sandwiches.json").unwrap();
     let materials: Materials = serde_json::from_reader(file).unwrap();
@@ -31,7 +33,7 @@ pub fn generate_sandwich(author: &str) -> String {
     let mut rng = thread_rng();
     let mut cost: f64 = 0.0;
     let mut buffer: Vec<String> = Vec::new();
-    buffer.push(format!("\n```\n  _ Bartender's Bistro _  \nOrder For: {}", author));
+    buffer.push(format!("\n```\n  _ Bartender's Bistro _  \nOrder For: {}", message.author.name));
 
     for _ in 0..rng.gen_range(1, 3) {
         let process = get_material(&materials.meat, &cost);
@@ -54,10 +56,10 @@ pub fn generate_sandwich(author: &str) -> String {
 
     buffer.push(format!("on {}, {}", bread, cooking));
 
-    let total_padding = get_padding_length("Total: ");
+    let total_padding = get_padding_length("Total:");
     buffer.push(format!("Total:{}${:.2}```", total_padding, cost));
 
-    return buffer.join("\n");
+    message.reply(buffer.join("\n").as_str());
 }
 
 fn get_padding_length(text: &str) -> String {
@@ -80,6 +82,6 @@ fn get_material(items: &Vec<Item>, cost: &f64) -> (String, f64) {
     let ref name = item.name;
     let mut local_cost = item.cost;
     let padding: String = get_padding_length(&name);
-    let x: String = format!("{}{} ${:.2}", name, padding, &local_cost);
+    let x: String = format!("{}{}${:.2}", name, padding, &local_cost);
     return (x, local_cost);
 }

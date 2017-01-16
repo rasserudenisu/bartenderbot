@@ -2,7 +2,9 @@
 
 Your friendly neighborhood barkeep. Serving up fresh drinks and delicious sandwiches 24/7.
 
-[Demo Link](https://discord.gg/ae3jrvq)
+# Usage
+
+Requires Rust, Discord bot token, and private hosting.
 
 # Commands
 

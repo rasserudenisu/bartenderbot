@@ -60,17 +60,17 @@ command!(help(context, message) {
 });
 
 command!(sandwich(context, message) {
-    let _ = context.say(commands::sandwich::generate_sandwich(message.author.name.as_str()).as_str());
+    commands::sandwich::generate_sandwich(message);
 });
 
 command!(drink(context, message) {
-    let _ = message.reply(commands::brewer::generate_drink(message.author.name.as_str()).as_str());
+    commands::brewer::generate_drink(message);
 });
 
 command!(roll(context, message) {
-    let _ = message.reply(commands::roll::roll(message).as_str());
+    commands::roll::roll(message);
 });
 
 command!(coin(context, message) {
-    let _ = message.reply(commands::roll::coin());
+    commands::roll::coin(message);
 });
